@@ -9,6 +9,13 @@
 #import "Dumper.h"
 #import "Device.h"
 #import <spawn.h>
+#import <FrontBoardServices/FrontBoardServices.h>
+#import <SpringBoardServices/SpringBoardServices.h>
+#import <BackBoardServices/BackBoardServices.h>
+#import <FrontBoardServices/FBSSystemService.h>
+#import "FBApplicationInfo.h"
+#import "LSApplicationWorkspace.h"
+#import "LSApplicationProxy.h"
 
 #ifndef _POSIX_SPAWN_DISABLE_ASLR
 #define _POSIX_SPAWN_DISABLE_ASLR 0x0100
@@ -18,7 +25,7 @@
 
 - (nullable instancetype)init {
     return [self initWithHeader:(thin_header){0} originalBinary:nil];
-}
+}	
 
 - (nullable instancetype)initWithHeader:(thin_header)macho originalBinary:(nullable Binary *)binary {
     self = [super init];
@@ -57,11 +64,163 @@
     return [Dumper readableArchFromMachHeader:macho.header];
 }
 
+
+- (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL)suspend {
+    KJDebug(@"doing posix spawn for %@!", binaryPath);
+    NSString *bundlePath = [binaryPath stringByDeletingLastPathComponent];
+
+    NSMutableDictionary *debug_options = [NSMutableDictionary dictionary];
+
+//    if (launch_argv != nil)
+//      [debug_options setObject:launch_argv forKey:FBSDebugOptionKeyArguments];
+//    if (launch_envp != nil)
+//      [debug_options setObject:launch_envp forKey:FBSDebugOptionKeyEnvironment];
+
+    //[debug_options setObject:stdio_path forKey:FBSDebugOptionKeyStandardOutPath];
+    //[debug_options setObject:stdio_path
+    //                  forKey:FBSDebugOptionKeyStandardErrorPath];
+    [debug_options setObject:[NSNumber numberWithBool:YES]
+                      forKey:FBSDebugOptionKeyWaitForDebugger];
+    if (yrn)
+      [debug_options setObject:[NSNumber numberWithBool:YES]
+                        forKey:FBSDebugOptionKeyDisableASLR];
+
+    // That will go in the overall dictionary:
+
+    NSMutableDictionary *options = [NSMutableDictionary dictionary];
+    [options setObject:debug_options
+                forKey:FBSOpenApplicationOptionKeyDebuggingOptions];
+    // And there are some other options at the top level in this dictionary:
+    [options setObject:[NSNumber numberWithBool:YES]
+                forKey:FBSOpenApplicationOptionKeyUnlockDevice];
+
+    // We have to get the "sequence ID & UUID" for this app bundle path and send
+    // them to FBS:
+
+    NSURL *app_bundle_url =
+        [NSURL fileURLWithPath:bundlePath isDirectory:YES];
+    LSApplicationProxy *app_proxy =
+        [LSApplicationProxy applicationProxyForBundleURL:app_bundle_url];
+    if (app_proxy) {
+      KJDebug(@"Sending AppProxy info: sequence no: %lu, GUID: %s.",
+             app_proxy.sequenceNumber,
+             [app_proxy.cacheGUID.UUIDString UTF8String]);
+      [options
+          setObject:[NSNumber numberWithUnsignedInteger:(unsigned int)app_proxy.sequenceNumber]
+             forKey:FBSOpenApplicationOptionKeyLSSequenceNumber];
+      [options setObject:app_proxy.cacheGUID.UUIDString
+                  forKey:FBSOpenApplicationOptionKeyLSCacheGUID];
+    }
+
+
+    //NSError error;
+    //FBSAddEventDataToOptions(options, event_data, error);
+
+    //return options;
+
+    //typename FBSSystemService, typename FBSOpenApplicationErrorCode,
+    //FBSOpenApplicationErrorCode FBSOpenApplicationErrorCodeNone, SetErrorFunction SetFBSError
+
+    pid_t return_pid = -1;
+    NSString *bundleIDNSStr = app_proxy.bundleIdentifier;
+
+    KJDebug(@"finished options, launching %@", bundleIDNSStr);
+    // Now make our systemService:
+    FBSSystemService *system_service = [[FBSSystemService alloc] init];
+
+      if (bundleIDNSStr == nil) {
+        bundleIDNSStr = [system_service systemApplicationBundleIdentifier];
+        if (bundleIDNSStr == nil) {
+          // Okay, no system app...
+          KJDebug(@"No system application to message.");
+          return false;
+        }
+      }
+
+      mach_port_t client_port = [system_service createClientPort];
+      __block dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+      __block FBSOpenApplicationErrorCode open_app_error = FBSOpenApplicationErrorCodeNone;
+      bool wants_pid = true;
+      __block pid_t pid_in_block;
+
+      const char *cstr = [bundleIDNSStr UTF8String];
+      if (!cstr)
+        cstr = "<Unknown Bundle ID>";
+
+      NSString *description = [options description];
+      KJDebug(@"About to launch process for bundle ID: %s - options:\n%s", cstr,
+        [description UTF8String]);
+      [system_service
+          openApplication:bundleIDNSStr
+                  options:options
+               clientPort:client_port
+               withResult:^(NSError *bks_error) {
+                 // The system service will cleanup the client port we created for
+                 // us.
+                 if (bks_error)
+                   open_app_error = (FBSOpenApplicationErrorCode)[bks_error code];
+
+                 if (open_app_error == FBSOpenApplicationErrorCodeNone) {
+                   if (wants_pid) {
+                     pid_in_block =
+                         [system_service pidForApplication:bundleIDNSStr];
+                     KJDebug(
+                         @"In completion handler, got pid for bundle id, pid: %d.",
+                         pid_in_block);
+                    KJDebug(
+                         @"In completion handler, got pid for bundle id, pid: %d.",
+                         pid_in_block);
+                   } else
+                       KJDebug(@"In completion handler: success.");
+                 } else {
+                   const char *error_str =
+                       [(NSString *)[bks_error localizedDescription] UTF8String];
+                     KJDebug(@"In completion handler for send "
+                                                 "event, got error \"%s\"(%ld).",
+                                    error_str ? error_str : "<unknown error>",
+                                    open_app_error);
+                   // REMOVE ME
+                     KJDebug(@"In completion handler for send event, got error "
+                               "\"%s\"(%ld).",
+                               error_str ? error_str : "<unknown error>",
+                               open_app_error);
+                 }
+
+                 dispatch_semaphore_signal(semaphore);
+               }
+
+      ];
+
+      const uint32_t timeout_secs = 30;
+
+      dispatch_time_t timeout =
+          dispatch_time(DISPATCH_TIME_NOW, timeout_secs * NSEC_PER_SEC);
+
+      long success = dispatch_semaphore_wait(semaphore, timeout) == 0;
+
+      if (!success) {
+        KJPrint(@"timed out trying to send openApplication to %s.", cstr);
+        return -1;
+      } else if (open_app_error != FBSOpenApplicationErrorCodeNone) {
+        KJDebug(@"unable to launch the application with CFBundleIdentifier '%s' "
+                    "bks_error = %u",
+                    cstr, open_app_error);
+          return -1;
+      } else if (wants_pid) {
+        return_pid = pid_in_block;
+        KJDebug(
+            @"Out of completion handler, pid from block %d and passing out: %d",
+            pid_in_block, return_pid);
+      }
+
+      return return_pid;
+}
+
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn {
     return [self posix_spawn:binaryPath disableASLR:yrn suspend:YES];
 }
 
-- (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL)suspend {
+- (pid_t)posix_spawn_old:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL)suspend {
 
     if ((_thinHeader.header.flags & MH_PIE) && yrn) {
 
@@ -155,8 +314,7 @@
 
     [self.originalFileHandle closeFile];
     self.originalFileHandle =
-        [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+"))
-                                      closeOnDealloc:YES];
+        [NSFileHandle fileHandleForReadingAtPath:swappedBinaryPath];
 
     uint32_t magic = [self.originalFileHandle unsignedInt32Atoffset:0];
     bool shouldSwap = magic == FAT_CIGAM;
