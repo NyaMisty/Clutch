@@ -136,6 +136,7 @@ int main(int argc, const char *argv[]) {
                         break;
                     }
                     case ClutchCommandOptionBinaryDump:
+                        _selectedOption = @"binary-dump";
                     case ClutchCommandOptionDump: {
                         NSDictionary *_installedApps = [[[KJApplicationManager alloc] init] cachedApplications];
                         NSArray *_installedArray = _installedApps.allValues;
