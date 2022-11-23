@@ -44,7 +44,7 @@
     }
 
     NSFileHandle *newFileHandle =
-        [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
+        [NSFileHandle fileHandleForReadingAtPath:binaryDumpPath];
 
     [newFileHandle seekToFileOffset:self.thinHeader.offset + self.thinHeader.size];
 

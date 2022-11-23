@@ -28,7 +28,9 @@
         stringByAppendingPathComponent:self.originalBinary.binaryPath.lastPathComponent];
 
     NSFileHandle *newFileHandle =
-        [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
+        [NSFileHandle fileHandleForReadingAtPath:binaryDumpPath];
+    NSFileHandle *newFileHandleW =
+        [NSFileHandle fileHandleForWritingAtPath:binaryDumpPath];
 
     NSString *swappedBinaryPath = self.originalBinary.binaryPath, *newSinf = self.originalBinary.sinfPath,
              *newSupp = self.originalBinary.suppPath; // default values if we dont need to swap archs
@@ -198,7 +200,7 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 
         dispatch_sync(queue, ^{
-            dumpResult = [self _dumpToFileHandle:newFileHandle
+            dumpResult = [self _dumpToFileHandle:newFileHandleW
                                     withDumpSize:(crypt.cryptsize + crypt.cryptoff)
                                            pages:pages
                                         fromPort:port

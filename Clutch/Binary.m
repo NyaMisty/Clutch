@@ -57,10 +57,7 @@
 
         _dumpOperation = [[BundleDumpOperation alloc] initWithBundle:_bundle];
 
-        NSFileHandle *tmpHandle =
-            [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(_bundle.executablePath.UTF8String, "r+"))
-                                          closeOnDealloc:YES];
-
+        NSFileHandle *tmpHandle = [NSFileHandle fileHandleForReadingAtPath:_bundle.executablePath];
         NSData *headersData = tmpHandle.availableData;
 
         thin_header headers[4];

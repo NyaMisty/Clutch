@@ -47,7 +47,9 @@
     self.originalBinary = (Binary *)[NSString stringWithFormat:@"<%@>", _infoPlist[@"CFBundleExecutable"]];
 
     NSFileHandle *newFileHandle =
-        [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
+        [NSFileHandle fileHandleForReadingAtPath:binaryDumpPath];
+    NSFileHandle *newFileHandleW =
+        [NSFileHandle fileHandleForWritingAtPath:binaryDumpPath];
 
     [newFileHandle seekToFileOffset:self.offset];
 
@@ -86,7 +88,7 @@
     //[self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:self.encryptionInfoCommand pages:self.pages
     // fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
 
-    dumpResult = [self _dumpToFileHandle:newFileHandle
+    dumpResult = [self _dumpToFileHandle:newFileHandleW
                             withDumpSize:self.dumpSize
                                    pages:self.pages
                                 fromPort:mach_task_self()
