@@ -44,6 +44,12 @@
 		26AB705E1E1D8CA600BDAE34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
 		26AB70871E1DC6DB00BDAE34 /* libMiniZip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AB70791E1DC67500BDAE34 /* libMiniZip.a */; };
 		26FB0323201BFD8F0046D1CA /* KJApplicationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FB0322201BFD8F0046D1CA /* KJApplicationManager.m */; };
+		4D2F91C5292E981D009E5EBA /* SpringBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2F91C0292E981D009E5EBA /* SpringBoardServices.framework */; };
+		4D2F91C6292E981D009E5EBA /* FrontBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2F91C1292E981D009E5EBA /* FrontBoardServices.framework */; };
+		4D2F91C7292E981D009E5EBA /* AssertionServicesSPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4D2F91C2292E981D009E5EBA /* AssertionServicesSPI.h */; };
+		4D2F91C8292E981D009E5EBA /* AssertionServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2F91C3292E981D009E5EBA /* AssertionServices.framework */; };
+		4D2F91C9292E981D009E5EBA /* BackBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2F91C4292E981D009E5EBA /* BackBoardServices.framework */; };
+		4D2F91CA292E988C009E5EBA /* MobileCoreServices in Headers */ = {isa = PBXBuildFile; fileRef = 4D2F91BF292E981D009E5EBA /* MobileCoreServices */; };
 		D7C6DCC01E250B7000B5AFEE /* ClutchCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = D7C6DCBE1E250B7000B5AFEE /* ClutchCommands.h */; };
 		D7C6DCC11E250B7000B5AFEE /* ClutchCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C6DCBF1E250B7000B5AFEE /* ClutchCommands.m */; };
 /* End PBXBuildFile section */
@@ -149,10 +155,14 @@
 		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
 		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Binary.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		AD16CC911C57291600A624EC /* LSApplicationWorkspace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSApplicationWorkspace.h; sourceTree = "<group>"; };
+		4D2F91BF292E981D009E5EBA /* MobileCoreServices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MobileCoreServices; path = Frameworks/MobileCoreServices; sourceTree = "<group>"; };
+		4D2F91C0292E981D009E5EBA /* SpringBoardServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpringBoardServices.framework; path = Frameworks/SpringBoardServices.framework; sourceTree = "<group>"; };
+		4D2F91C1292E981D009E5EBA /* FrontBoardServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FrontBoardServices.framework; path = Frameworks/FrontBoardServices.framework; sourceTree = "<group>"; };
+		4D2F91C2292E981D009E5EBA /* AssertionServicesSPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssertionServicesSPI.h; path = Frameworks/AssertionServicesSPI.h; sourceTree = "<group>"; };
+		4D2F91C3292E981D009E5EBA /* AssertionServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssertionServices.framework; path = Frameworks/AssertionServices.framework; sourceTree = "<group>"; };
+		4D2F91C4292E981D009E5EBA /* BackBoardServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BackBoardServices.framework; path = Frameworks/BackBoardServices.framework; sourceTree = "<group>"; };
 		ADAD7C171C5B3C8600644FD6 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		ADAD7C181C5B3C8600644FD6 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
-		ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSApplicationProxy.h; path = ../LSApplicationProxy.h; sourceTree = "<group>"; };
 		D7C6DCBE1E250B7000B5AFEE /* ClutchCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchCommands.h; sourceTree = "<group>"; };
 		D7C6DCBF1E250B7000B5AFEE /* ClutchCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchCommands.m; sourceTree = "<group>"; };
 		D7C6DCC41E25A18200B5AFEE /* move_and_sign.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = move_and_sign.sh; sourceTree = "<group>"; };
@@ -166,10 +176,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				26AB70871E1DC6DB00BDAE34 /* libMiniZip.a in Frameworks */,
+				4D2F91C9292E981D009E5EBA /* BackBoardServices.framework in Frameworks */,
 				26AB705A1E1D81D400BDAE34 /* libz.tbd in Frameworks */,
+				4D2F91C5292E981D009E5EBA /* SpringBoardServices.framework in Frameworks */,
+				4D2F91C8292E981D009E5EBA /* AssertionServices.framework in Frameworks */,
 				266FD1A21E1D7D2200935807 /* MobileCoreServices.framework in Frameworks */,
 				266FD1A11E1D7D1500935807 /* Foundation.framework in Frameworks */,
 				266FD1A01E1D7CFF00935807 /* libncurses.tbd in Frameworks */,
+				4D2F91C6292E981D009E5EBA /* FrontBoardServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +234,12 @@
 		324EA6251A89258000844540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4D2F91C3292E981D009E5EBA /* AssertionServices.framework */,
+				4D2F91C2292E981D009E5EBA /* AssertionServicesSPI.h */,
+				4D2F91C4292E981D009E5EBA /* BackBoardServices.framework */,
+				4D2F91C1292E981D009E5EBA /* FrontBoardServices.framework */,
+				4D2F91BF292E981D009E5EBA /* MobileCoreServices */,
+				4D2F91C0292E981D009E5EBA /* SpringBoardServices.framework */,
 				26AB70591E1D81D400BDAE34 /* libz.tbd */,
 				266FD19F1E1D7CFF00935807 /* libncurses.tbd */,
 				324EA63D1A89260A00844540 /* MobileCoreServices.framework */,
@@ -262,8 +282,6 @@
 				328CCB711AD004FF00B21225 /* NSTask.h */,
 				328CCB351ACECEB500B21225 /* scinfo.h */,
 				328CCB361ACECEB500B21225 /* scinfo.m */,
-				ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */,
-				AD16CC911C57291600A624EC /* LSApplicationWorkspace.h */,
 				3282BE041A8D9A9100E5068A /* optool */,
 				32EFB6CD1A8A4F06005BB56C /* Zip */,
 				324EA6471A892AAD00844540 /* FBApplicationInfo.h */,
@@ -396,7 +414,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D2F91CA292E988C009E5EBA /* MobileCoreServices in Headers */,
 				26AB705C1E1D857E00BDAE34 /* Clutch-Prefix.pch in Headers */,
+				4D2F91C7292E981D009E5EBA /* AssertionServicesSPI.h in Headers */,
 				D7C6DCC01E250B7000B5AFEE /* ClutchCommands.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -564,6 +584,10 @@
 				CLANG_WARN_BOOL_CONVERSION = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_IDENTITY = "-";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
@@ -573,6 +597,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_SHADOW = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/**";
 				INFOPLIST_FILE = Clutch/Info.plist;
 				OTHER_CFLAGS = (
 					"$(inherited)",
@@ -595,6 +620,10 @@
 				CLANG_WARN_BOOL_CONVERSION = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_IDENTITY = "-";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
@@ -604,6 +633,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_SHADOW = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/**";
 				INFOPLIST_FILE = Clutch/Info.plist;
 				OTHER_CFLAGS = (
 					"$(inherited)",
