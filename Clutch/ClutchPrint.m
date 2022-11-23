@@ -15,7 +15,7 @@ static NSInteger KJPrintv(NSString *format, va_list ap) {
         format = [format stringByAppendingString:@"\n"];
     }
     NSString *s = [[NSString alloc] initWithFormat:format arguments:ap];
-    return printf("%s", s.UTF8String);
+    return fprintf(stderr, "%s", s.UTF8String);
 }
 
 NSInteger KJPrint(NSString *format, ...) {
