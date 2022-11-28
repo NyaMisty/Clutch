@@ -301,6 +301,8 @@
                 }
             }
         }
+        KJDebug(@"curRemainOP: %@", self.dumpQueue.operations);
+        sleep(1);
     }
     if (failed) {
         [self.dumpQueue cancelAllOperations];

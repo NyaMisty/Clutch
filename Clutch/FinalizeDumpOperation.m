@@ -89,6 +89,8 @@ extern struct timeval gStart;
 
         if (_onlyBinaries) {
 
+            KJDebug(@"FinalizeDump: only binary!");
+
             NSDirectoryEnumerator *dirEnumerator =
                 [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:_application.workingPath]
                                    includingPropertiesForKeys:@[ NSURLNameKey, NSURLIsDirectoryKey ]
@@ -118,14 +120,13 @@ extern struct timeval gStart;
 
             __block BOOL status = plists.count == self.expectedBinariesCount;
 
+            [self completeOperation];
             if (status) {
                 KJPrint(@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath);
             } else {
                 KJPrint(@"Failed to dump %@ :(", _application.bundleIdentifier);
                 return;
             }
-
-            [self completeOperation];
 
             return;
         }

@@ -329,8 +329,10 @@
 
         // Do the main work of the operation here.
         [self completeOperation];
-    } @catch (...) {
+    } @catch (NSException* exception) {
         // Do not rethrow exceptions.
+        [self failedOperation];
+        [exception raise];
     }
 }
 
