@@ -101,17 +101,31 @@
         [NSURL fileURLWithPath:bundlePath isDirectory:YES];
     LSApplicationProxy *app_proxy =
         [LSApplicationProxy applicationProxyForBundleURL:app_bundle_url];
-    if (app_proxy) {
-      KJDebug(@"Sending AppProxy info: sequence no: %lu, GUID: %s.",
+    
+    NSString *bundleIDNSStr = nil;
+    
+    NSString *infoPlist = [NSString stringWithFormat:@"%@/Info.plist", bundlePath];
+    NSMutableDictionary *bundleInfo = [NSMutableDictionary dictionaryWithContentsOfFile:infoPlist];
+    if (bundleInfo != nil) {
+        bundleIDNSStr = [bundleInfo objectForKey:@"CFBundleIdentifier"];
+    } else {
+        KJDebug(@"Failed to get Info.plist at %@", infoPlist);
+    }
+    
+    if (app_proxy && app_proxy.bundleIdentifier) {
+        KJDebug(@"Sending AppProxy info: sequence no: %lu, GUID: %s.",
              app_proxy.sequenceNumber,
              [app_proxy.cacheGUID.UUIDString UTF8String]);
-      [options
-          setObject:[NSNumber numberWithUnsignedInteger:(unsigned int)app_proxy.sequenceNumber]
-             forKey:FBSOpenApplicationOptionKeyLSSequenceNumber];
-      [options setObject:app_proxy.cacheGUID.UUIDString
-                  forKey:FBSOpenApplicationOptionKeyLSCacheGUID];
+        bundleIDNSStr = app_proxy.bundleIdentifier;
+        [options
+            setObject:[NSNumber numberWithUnsignedInteger:(unsigned int)app_proxy.sequenceNumber]
+                forKey:FBSOpenApplicationOptionKeyLSSequenceNumber];
+        [options setObject:app_proxy.cacheGUID.UUIDString
+                    forKey:FBSOpenApplicationOptionKeyLSCacheGUID];
+    } else {
+        KJDebug(@"Failed to get app_proxy for %@, using old posix spawn!", bundlePath);
+        return [self posix_spawn_old:bundlePath disableASLR:yrn suspend:suspend];
     }
-
 
     //NSError error;
     //FBSAddEventDataToOptions(options, event_data, error);
@@ -122,20 +136,11 @@
     //FBSOpenApplicationErrorCode FBSOpenApplicationErrorCodeNone, SetErrorFunction SetFBSError
 
     pid_t return_pid = -1;
-    NSString *bundleIDNSStr = app_proxy.bundleIdentifier;
 
     KJDebug(@"finished options, launching %@", bundleIDNSStr);
     // Now make our systemService:
     FBSSystemService *system_service = [[FBSSystemService alloc] init];
 
-      if (bundleIDNSStr == nil) {
-        bundleIDNSStr = [system_service systemApplicationBundleIdentifier];
-        if (bundleIDNSStr == nil) {
-          // Okay, no system app...
-          KJDebug(@"No system application to message.");
-          return false;
-        }
-      }
 
       mach_port_t client_port = [system_service createClientPort];
       __block dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -200,12 +205,12 @@
 
       if (!success) {
         KJPrint(@"timed out trying to send openApplication to %s.", cstr);
-        return -1;
+        return 99999999;
       } else if (open_app_error != FBSOpenApplicationErrorCodeNone) {
         KJDebug(@"unable to launch the application with CFBundleIdentifier '%s' "
                     "bks_error = %u",
                     cstr, open_app_error);
-          return -1;
+          return 99999999;
       } else if (wants_pid) {
         return_pid = pid_in_block;
         KJDebug(

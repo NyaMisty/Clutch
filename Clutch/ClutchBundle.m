@@ -40,6 +40,7 @@
             return nil;
         }
         _dumpQueue = [NSOperationQueue new];
+        _dumpQueue.maxConcurrentOperationCount = 1;
     }
 
     return self;
